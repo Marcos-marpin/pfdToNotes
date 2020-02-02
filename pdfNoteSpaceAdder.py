@@ -8,7 +8,7 @@ SCALE_FACTOR = 0.50
 ROTATION_DEGREES = -90
 
 def crear_pagina_notas(pdf, pagina, orientacion):
-    pagina_notas = PageObject.createBlankPage(pdf)
+    pagina_notas = PageObject.createBlankPage(pdf, 595, 842)
     tx = pagina_notas.mediaBox.upperLeft[0]  # traslacion en x
     ty = float(pagina_notas.mediaBox.upperLeft[1])  # traslacion en y
     if orientacion == "v":
@@ -36,16 +36,7 @@ with open(args.inputPDF, "rb") as (inputPDF), \
         open(args.inputPDF.replace(".pdf", "") + "_notes.pdf", "wb") as outputPDF:
     pdf = PdfFileReader(inputPDF)
     newPfd = PdfFileWriter()
-
-    if r:
-        for i in range(pdf.getNumPages()):
-            pagina = pdf.getPage(i)
-            if i in r:
-                newPfd.addPage(crear_pagina_notas(pdf, pagina, args.o))
-            else:
-                newPfd.addPage(pagina)
-    else:
-        for i in range(pdf.getNumPages()):
-            pagina = pdf.getPage(i)
-            newPfd.addPage(crear_pagina_notas(pdf, pagina, args.o))
+    for i in range(pdf.getNumPages()):
+        pagina = pdf.getPage(i)
+        newPfd.addPage(crear_pagina_notas(pdf, pagina, args.o))
     newPfd.write(outputPDF)
