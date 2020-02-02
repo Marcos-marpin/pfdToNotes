@@ -5,31 +5,20 @@ import re
 import sys
 
 SCALE_FACTOR = 0.50
-ROTATION_DEGREES = -90
+WIDTH_A4 = 595
+HEIGHT_A4 = 842
 
-def crear_pagina_notas(pdf, pagina, orientacion):
-    pagina_notas = PageObject.createBlankPage(pdf, 595, 842)
-    tx = pagina_notas.mediaBox.upperLeft[0]  # traslacion en x
-    ty = float(pagina_notas.mediaBox.upperLeft[1])  # traslacion en y
-    if orientacion == "v":
-        ty = ty - (ty * SCALE_FACTOR)
-        pagina_notas.mergeScaledTranslatedPage(pagina, SCALE_FACTOR, tx, ty)
-    else:
-        pagina_notas.mergeRotatedScaledTranslatedPage(pagina, ROTATION_DEGREES, SCALE_FACTOR, tx, ty)
+def crear_pagina_notas(pdf, pagina):
+    pagina_notas = PageObject.createBlankPage(pdf, WIDTH_A4, HEIGHT_A4)
+    ty = HEIGHT_A4 - float(pagina.mediaBox.upperLeft[1]) * SCALE_FACTOR # traslacion en y
+    pagina_notas.mergeScaledTranslatedPage(pagina, SCALE_FACTOR, 0, ty)
     return pagina_notas
 
 
 # Argumentos
 parser = argparse.ArgumentParser(description="Script para agregar espacio de notas en los PDF")
 parser.add_argument("inputPDF", type=str, help="PDF que se quiere modificar")
-parser.add_argument("-o", type=str,
-                    help="Orientacion en la que está el pdf original [v = vertical, h = horizontal]", default="h")
 args = parser.parse_args()
-
-# Comprobar argumentos
-if args.o != "v" and args.o != "h":
-    parse_range("ERROR: la orientación debe ser [v = vertical, h = horizontal]")
-    sys.exit()
 
 # Abrir PDF's
 with open(args.inputPDF, "rb") as (inputPDF), \
@@ -38,5 +27,5 @@ with open(args.inputPDF, "rb") as (inputPDF), \
     newPfd = PdfFileWriter()
     for i in range(pdf.getNumPages()):
         pagina = pdf.getPage(i)
-        newPfd.addPage(crear_pagina_notas(pdf, pagina, args.o))
+        newPfd.addPage(crear_pagina_notas(pdf, paginacom))
     newPfd.write(outputPDF)
