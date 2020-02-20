@@ -1,9 +1,9 @@
 # pfdToNotes
 - Requirements: PyPDF2 module.
-'''python
+```python
   pip3 install PyPDF2
-'''
+```
 - Usage:
-'''python
+```python
   python3 pdfToNotes pdf
-'''
+
