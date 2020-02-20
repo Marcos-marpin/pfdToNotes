@@ -5,5 +5,4 @@
 ```
 - Usage:
 ```python
-  python3 pdfToNotes pdf
-
+  python3 pdfToNotes.py pdf
